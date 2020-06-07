@@ -13,6 +13,7 @@ public interface AchatService {
 	Achat updateAchat(Achat a);
 	Achat retrieveAchat(String id);
 	 String getAchatRemarqueById(String id) ;
-	 public int ajouterAchat(Achat achat);
+	 public long ajouterAchat(Achat achat);
+	public long addOrUpdateAchat(Achat achat);
 
 }
