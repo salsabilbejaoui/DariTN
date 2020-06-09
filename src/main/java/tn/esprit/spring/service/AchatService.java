@@ -15,5 +15,6 @@ public interface AchatService {
 	 String getAchatRemarqueById(String id) ;
 	 public long ajouterAchat(Achat achat);
 	public long addOrUpdateAchat(Achat achat);
+	List<Achat> getAllAchats();
 
 }

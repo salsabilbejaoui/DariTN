@@ -67,5 +67,7 @@ public class AchatServiceImpl implements AchatService{
 		return achat.getId();
 	
 	}	
-	
+	@Override public List<Achat> getAllAchats() {
+		return (List<Achat>) achaRepository.findAll(); }
+
 }
