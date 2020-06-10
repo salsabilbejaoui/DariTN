@@ -14,15 +14,17 @@ import tn.esprit.spring.repository.AchatRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AchatServiceImpl implements AchatService{
+public class AchatServiceImpl implements AchatService {
 	@Autowired
 	AchatRepository achaRepository;
-	private static final Logger L=LogManager.getLogger(AchatServiceImpl.class);
+	private static final Logger L = LogManager.getLogger(AchatServiceImpl.class);
+
 	@Override
-	public  List<Achat> retrieveAllAchats() {
-		List<Achat> Achats=(List<Achat>) achaRepository.findAll();
-		for(Achat achat:Achats){
-		L.info("user +++ : "+ achat);}
+	public List<Achat> retrieveAllAchats() {
+		List<Achat> Achats = (List<Achat>) achaRepository.findAll();
+		for (Achat achat : Achats) {
+			L.info("user +++ : " + achat);
+		}
 		return Achats;
 	}
 
@@ -34,7 +36,7 @@ public class AchatServiceImpl implements AchatService{
 	@Override
 	public void deleteAchat(String id) {
 		achaRepository.deleteById(Long.parseLong(id));
-		
+
 	}
 
 	@Override
@@ -44,30 +46,36 @@ public class AchatServiceImpl implements AchatService{
 
 	@Override
 	public Achat retrieveAchat(String id) {
-	
+
 		Achat a;
-		a=achaRepository.findById(Long.parseLong(id));
+		a = achaRepository.findById(Long.parseLong(id));
 		return a;
 	}
 
 	public String getAchatRemarqueById(String id) {
-		
-			Achat achatManagedEntity =achaRepository.findById(Long.parseLong(id));
-			return achatManagedEntity.getRemarque();
-		}
+
+		Achat achatManagedEntity = achaRepository.findById(Long.parseLong(id));
+		return achatManagedEntity.getRemarque();
+	}
 
 	@Override
 	public long ajouterAchat(Achat achat) {
 		achaRepository.save(achat);
 		return achat.getId();
 	}
+
 	@Override
 	public long addOrUpdateAchat(Achat achat) {
 		achaRepository.save(achat);
 		return achat.getId();
+
+	}
+
+	@Override
+	public List<Achat> getAllAchats() {
+		return (List<Achat>) achaRepository.findAll();
+	}
+
 	
-	}	
-	@Override public List<Achat> getAllAchats() {
-		return (List<Achat>) achaRepository.findAll(); }
 
 }

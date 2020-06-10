@@ -33,6 +33,9 @@ public class Achat implements Serializable{
 	@Enumerated(EnumType.STRING)
 	Payementmode Payementmode;
 	@Column 
+	@Enumerated(EnumType.STRING)
+	payementperide Payementperiode;
+	@Column 
 	private String Remarque;
 	@Column 
 	private String RecomendationLetter;

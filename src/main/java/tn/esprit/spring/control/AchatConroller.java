@@ -188,7 +188,6 @@ public class AchatConroller {
 		this.setRemarque(empl.getRemarque());
 		this.setRecomendationLetter(empl.getRecomendationLetter());
 		this.setHistory(empl.getHistory());
-		
 
 	}
 
@@ -206,5 +205,8 @@ public class AchatConroller {
 		this.achatIdToBeUpdated = achatIdToBeUpdated;
 	}
 
-	
+	public Payementmode[] getpayementmodes() {
+		return Payementmode.values();
+	}
+
 }
