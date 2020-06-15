@@ -13,31 +13,24 @@ import javax.persistence.Enumerated;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.el.ELBeanName;
 import org.primefaces.event.FileUploadEvent;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-
-import tn.esprit.spring.entity.Achat;
-import tn.esprit.spring.entity.Action;
-import tn.esprit.spring.entity.AdState;
-import tn.esprit.spring.entity.Annonce;
-import tn.esprit.spring.entity.AnnonceReview;
-import tn.esprit.spring.entity.ContractType;
-import tn.esprit.spring.entity.Notification;
-import tn.esprit.spring.entity.Payementmode;
-import tn.esprit.spring.entity.State;
-import tn.esprit.spring.entity.StatePrice;
-import tn.esprit.spring.entity.Type;
 import tn.esprit.spring.entity.User;
 import tn.esprit.spring.repository.AnnonceRepository;
 import tn.esprit.spring.service.AchatService;
-import tn.esprit.spring.service.AchatServiceImpl;
 import tn.esprit.spring.service.AnnReviewService;
 import tn.esprit.spring.service.AnnService;
-import tn.esprit.spring.service.EmailService;
 import tn.esprit.spring.service.NotificationServiceImpl;
 import tn.esprit.spring.service.UserSerivce;
+import tn.esprit.spring.entity.Achat;
+import tn.esprit.spring.entity.Payementmode;
+import tn.esprit.spring.entity.Payementperiode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import tn.esprit.spring.control.UserController;
+
+
+
+
 
 @Scope(value = "session")
 @Controller(value = "achatController")
@@ -47,7 +40,18 @@ public class AchatConroller {
 
 	@Autowired
 	AchatService iachatservice;
-
+	@Autowired
+	AnnService iannservice;
+	@Autowired
+	AnnReviewService iannRevservice;
+	@Autowired 
+	AnnonceRepository annRepo;
+	@Autowired
+	UserSerivce userservice;
+	@Autowired
+	UserController userController;
+	@Autowired
+	NotificationServiceImpl notificationservice;
 	private Achat achat;
 
 	private User authenticatedUser;
@@ -57,7 +61,9 @@ public class AchatConroller {
 	private String history;
 
 	private Payementmode Payementmode;
-
+	
+	private Payementperiode Payementperiode;
+	
 	private String Remarque;
 
 	private String RecomendationLetter;
@@ -75,6 +81,14 @@ public class AchatConroller {
 	// public List<Achat> getAchats() {
 	// return achats;
 	// }
+
+	public User getAuthenticatedUser() {
+		return authenticatedUser;
+	}
+
+	public void setAuthenticatedUser(User authenticatedUser) {
+		this.authenticatedUser = authenticatedUser;
+	}
 
 	public void setAchats(List<Achat> achats) {
 		this.achats = achats;
@@ -120,10 +134,12 @@ public class AchatConroller {
 		RecomendationLetter = recomendationLetter;
 	}
 
-	@Override
-	public String toString() {
-		return "AchatConroller [datedachat=" + datedachat + ", history=" + history + ", Payementmode=" + Payementmode
-				+ ", Remarque=" + Remarque + ", RecomendationLetter=" + RecomendationLetter + "]";
+	public Payementperiode getPayementperiode() {
+		return Payementperiode;
+	}
+
+	public void setPayementperiode(Payementperiode payementperiode) {
+		Payementperiode = payementperiode;
 	}
 
 	/**
@@ -133,34 +149,28 @@ public class AchatConroller {
 		super();
 	}
 
-	/**
-	 * @param datedachat
-	 * @param history
-	 * @param payementmode
-	 * @param remarque
-	 * @param recomendationLetter
-	 */
-	public AchatConroller(Date datedachat, String history, tn.esprit.spring.entity.Payementmode payementmode,
-			String remarque, String recomendationLetter) {
-		super();
-		this.datedachat = datedachat;
-		this.history = history;
-		Payementmode = payementmode;
-		Remarque = remarque;
-		RecomendationLetter = recomendationLetter;
-	}
-
 	public long ajouterAchat(Achat achat) {
 		iachatservice.ajouterAchat(achat);
 		return achat.getId();
 	}
 
-	public void addAchat() {
-		iachatservice.addOrUpdateAchat(new Achat(datedachat, history, Payementmode, Remarque, RecomendationLetter));
-	}
+	public String addAchat() {
+		String navigateTo = "/pages/user/salsabil.xhtml?faces-redirect=true";   
+		if (userController.doLogin()==navigateTo )
+			{return "/login.xhtml?faces-redirect=true";}
+		else{
+			
+			User currentuser= userController.getAuthenticatedUser();
+			Date currentdate = new Date();
+		long annid = 
+		iachatservice.addOrUpdateAchat(
+				new Achat(datedachat, history, Payementmode, Payementperiode, Remarque, RecomendationLetter));
+		return navigateTo;	}}
+
 
 	public void updateAchat() {
-		iachatservice.addOrUpdateAchat(new Achat(datedachat, history, Payementmode, Remarque, RecomendationLetter));
+		iachatservice.addOrUpdateAchat(
+				new Achat(datedachat, history, Payementmode, Payementperiode, Remarque, RecomendationLetter));
 	}
 
 	public List<Achat> getAllAchats() {
@@ -170,6 +180,10 @@ public class AchatConroller {
 
 	public Payementmode[] getPayementmodes() {
 		return Payementmode.values();
+	}
+
+	public Payementperiode[] getPayementperiodes() {
+		return Payementperiode.values();
 	}
 
 	public String dogoto() {
@@ -185,6 +199,7 @@ public class AchatConroller {
 	public void displayAchat(Achat empl) {
 		this.setDatedachat(empl.getDatedachat());
 		this.setPayementmode(empl.getPayementmode());
+		this.setPayementperiode(empl.getPayementperiode());
 		this.setRemarque(empl.getRemarque());
 		this.setRecomendationLetter(empl.getRecomendationLetter());
 		this.setHistory(empl.getHistory());
@@ -203,10 +218,6 @@ public class AchatConroller {
 
 	public void setAchatIdToBeUpdated(Integer achatIdToBeUpdated) {
 		this.achatIdToBeUpdated = achatIdToBeUpdated;
-	}
-
-	public Payementmode[] getpayementmodes() {
-		return Payementmode.values();
 	}
 
 }
