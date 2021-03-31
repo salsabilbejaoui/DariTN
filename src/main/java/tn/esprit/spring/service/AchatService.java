@@ -16,5 +16,6 @@ public interface AchatService {
 	 public long ajouterAchat(Achat achat);
 	public long addOrUpdateAchat(Achat achat);
 	List<Achat> getAllAchats();
-
+	public int getNombrePaycashJPQL();
+	public int getNombreEasy_payementJPQL();
 }

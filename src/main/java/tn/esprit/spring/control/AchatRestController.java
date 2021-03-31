@@ -28,7 +28,7 @@ AchatServiceImpl achatService;
 @GetMapping(value = "getAchatRemarqueById/{idacha}")
 @ResponseBody
 public String getAchatRemarqueById(@PathVariable("idacha")String Id) {
-		return "cest la remarque "+achatService.getAchatRemarqueById(Id);
+		return "cest la remarque: "+achatService.getAchatRemarqueById(Id);
 	}
 
 

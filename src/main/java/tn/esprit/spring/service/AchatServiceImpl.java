@@ -76,6 +76,12 @@ public class AchatServiceImpl implements AchatService {
 		return (List<Achat>) achaRepository.findAll();
 	}
 
+	public int getNombrePaycashJPQL() {
+		return  achaRepository.count1();
+	}
+	public int getNombreEasy_payementJPQL() {
+		return  achaRepository.count2();
+	}
 	
 
 }
